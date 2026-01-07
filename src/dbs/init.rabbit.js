@@ -32,7 +32,25 @@ const connectToRabbitMQForTest = async () => {
     }
 };
 
+const consumerQueue = async (chanel, queueName) => {
+    try {
+        await chanel.assertQueue(queueName, { durable: true });
+        console.log(`Waiting for messages...`);
+        chanel.consume(queueName, async (msg) => {
+            console.log(`Received message: ${msg.content.toString()}`);
+
+            // 1. find user following SHOP
+            // 2. send notification to user
+            // 3. yes => success
+            // 4. no => setup DLX
+        }, { noAck: true });
+    } catch (error) {
+        console.error("Failed to consume queue:", error);
+    }
+}
+
 module.exports = {
     connectToRabbitMQ,
-    connectToRabbitMQForTest
+    connectToRabbitMQForTest,
+    consumerQueue
 };
